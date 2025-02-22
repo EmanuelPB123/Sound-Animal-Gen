@@ -1,0 +1,179 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Animal Sound Generator ML</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Generador de Sonidos de Animales con ML</h1>
+    
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="input">Ingresar Datos</button>
+      <button class="tab-btn" data-tab="generate">Generar Sonido</button>
+      <button class="tab-btn" data-tab="database">Base de Datos</button>
+    </div>
+
+    <div class="tab-content active" id="input">
+      <h2>Ingresar Nuevo Animal</h2>
+      <form id="animalForm">
+        <div class="form-group">
+          <label>Nombre del Animal:</label>
+          <input type="text" name="name" required>
+        </div>
+
+        <div class="form-group">
+          <label>Categoría:</label>
+          <select name="category" required>
+            <option value="">Seleccione categoría</option>
+            <option value="mamifero">Mamífero</option>
+            <option value="ave">Ave</option>
+            <option value="reptil">Reptil</option>
+            <option value="anfibio">Anfibio</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Capacidad Pulmonar (cm³):</label>
+          <input type="number" name="lungCapacity" min="0" step="0.1" required>
+        </div>
+
+        <div class="form-group">
+          <label>Largo de Faringe (cm):</label>
+          <input type="number" name="pharynxLength" min="0" step="0.1" required>
+        </div>
+
+        <div class="form-group">
+          <label>Ancho de Faringe (cm):</label>
+          <input type="number" name="pharynxWidth" min="0" step="0.1" required>
+        </div>
+
+        <div class="form-group">
+          <label>Tamaño de Cavidad Bucal (cm³):</label>
+          <input type="number" name="oralCavitySize" min="0" step="0.1" required>
+        </div>
+
+        <div class="form-group">
+          <label>Forma del Cráneo:</label>
+          <select name="skullShape" required>
+            <option value="">Seleccione forma</option>
+            <option value="redondo">Redondo</option>
+            <option value="alargado">Alargado</option>
+            <option value="aplanado">Aplanado</option>
+            <option value="conico">Cónico</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Estructuras Óseas Modificadoras:</label>
+          <div class="checkbox-group">
+            <input type="checkbox" name="boneStructures" value="resonancia">
+            <label>Cámaras de Resonancia</label>
+            
+            <input type="checkbox" name="boneStructures" value="senos">
+            <label>Senos Nasales</label>
+            
+            <input type="checkbox" name="boneStructures" value="crestas">
+            <label>Crestas Óseas</label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Archivo de Sonido (WAV/MP3):</label>
+          <input type="file" name="sound" accept=".wav,.mp3" required>
+        </div>
+
+        <button type="submit">Guardar Animal</button>
+      </form>
+    </div>
+
+    <div class="tab-content" id="generate">
+      <h2>Generar Sonido</h2>
+      <div class="generator-controls">
+        <div class="sliders">
+          <div class="slider-group">
+            <label>Capacidad Pulmonar:</label>
+            <input type="range" id="genLungCapacity" min="0" max="1000" step="1">
+            <span class="value"></span>
+          </div>
+
+          <div class="slider-group">
+            <label>Largo de Faringe:</label>
+            <input type="range" id="genPharynxLength" min="0" max="50" step="0.1">
+            <span class="value"></span>
+          </div>
+
+          <div class="slider-group">
+            <label>Ancho de Faringe:</label>
+            <input type="range" id="genPharynxWidth" min="0" max="50" step="0.1">
+            <span class="value"></span>
+          </div>
+
+          <div class="slider-group">
+            <label>Tamaño Cavidad Bucal:</label>
+            <input type="range" id="genOralCavitySize" min="0" max="500" step="1">
+            <span class="value"></span>
+          </div>
+        </div>
+
+        <div class="options">
+          <select id="genSkullShape">
+            <option value="">Forma del Cráneo</option>
+            <option value="redondo">Redondo</option>
+            <option value="alargado">Alargado</option>
+            <option value="aplanado">Aplanado</option>
+            <option value="conico">Cónico</option>
+          </select>
+
+          <div class="checkbox-group">
+            <label>Estructuras Óseas:</label>
+            <div>
+              <input type="checkbox" id="genResonancia">
+              <label>Cámaras de Resonancia</label>
+            </div>
+            <div>
+              <input type="checkbox" id="genSenos">
+              <label>Senos Nasales</label>
+            </div>
+            <div>
+              <input type="checkbox" id="genCrestas">
+              <label>Crestas Óseas</label>
+            </div>
+          </div>
+        </div>
+
+        <button id="generateBtn">Generar Sonido</button>
+        
+        <div class="result">
+          <canvas id="waveform" width="800" height="200"></canvas>
+          <div class="controls">
+            <button id="playBtn" disabled>Reproducir</button>
+            <button id="downloadBtn" disabled>Descargar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-content" id="database">
+      <h2>Base de Datos de Animales</h2>
+      <div class="database-controls">
+        <input type="text" id="searchInput" placeholder="Buscar animal...">
+        <select id="filterCategory">
+          <option value="">Todas las categorías</option>
+          <option value="mamifero">Mamífero</option>
+          <option value="ave">Ave</option>
+          <option value="reptil">Reptil</option>
+          <option value="anfibio">Anfibio</option>
+        </select>
+      </div>
+      <div class="animals-grid" id="animalsGrid"></div>
+    </div>
+  </div>
+  
+  <audio id="sampleAudio" src="sparrows-in-shrubs-around-10am-in-the-morning-68775.mp3" style="display: none;" preload="auto"></audio>
+  
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.2.0/dist/tf.min.js"></script>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
